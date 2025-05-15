@@ -3,8 +3,11 @@
   import { onMount } from 'svelte';
   import Date from './lib/Date.svelte';
   import Article from './lib/Article.svelte';
+  import CommentSection from './lib/CommentSection.svelte';
 
   let apiKey: string = '';
+
+  let commentSectionVisible = false;
 
   // format of article objects
   let articles: {
@@ -35,8 +38,13 @@
   });
 </script>
 
+
+
 <main>
     <!--header includes title and date -->
+    <!-- UNCOMMENT THE LINE BELOW TO SHOW COMMENT SECTION -->
+    <!-- <CommentSection/> -->
+    <div style="z-index: 1;">
     <header>
         <img class="logo" alt="logo of new york times" src="./src/assets/The_New_York_Times_logo.png">
         <div class="features">
@@ -49,10 +57,10 @@
             {#if articles.length > 2}
                
                 <!-- column1: first article -->
-                <Article id = 0 articles={articles}/>
+                <Article id = 0 articles={articles} numOfComments = 0/>
                 
                 <!-- column1: second article -->
-                <Article id = 1 articles={articles} hideHr={true}/>
+                <Article id = 1 articles={articles} hideHr={true} numOfComments = 0/>
                 
             {:else}
                 <!-- Placeholder content -->
@@ -64,10 +72,10 @@
         <!-- column2: main column -->
         <div class="column2">
             {#if articles.length > 4}
-                <Article id = 3 articles={articles}/>
+                <Article id = 3 articles={articles} numOfComments = 0/>
               
                 <!-- column2: second article -->
-                <Article id = 4 articles={articles} hideHr={true}/>
+                <Article id = 4 articles={articles} hideHr={true} numOfComments = 0/>
             {:else}
                 <!-- Placeholder content -->
                 <h2 class="main-column">Loading...</h2>
@@ -78,10 +86,10 @@
         
         <div class="column3">
             {#if articles.length > 6}
-                <Article id=5 articles={articles}/>
+                <Article id=5 articles={articles} numOfComments = 0/>
                 
                 <!-- column3: second article -->
-                <Article id = 6 articles={articles} hideHr={true}/>
+                <Article id = 6 articles={articles} hideHr={true} numOfComments = 0/>
             {:else}
                 <!-- Placeholder content -->
                 <h2 class="side-column">Loading...</h2>
@@ -92,6 +100,7 @@
     <footer>
         <hr class="footer-line-break">
     </footer>
+  </div>
 </main>
 
 <style>

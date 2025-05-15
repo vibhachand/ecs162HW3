@@ -1,6 +1,16 @@
 <!-- Displays article info -->
 <script>
-  let { id, articles, hideHr = false} = $props();
+  let { id, articles, hideHr = false, numOfComments} = $props();
+
+  let openComments = document.getElementById("openComments");
+  
+  if(openComments){
+    openComments.onclick = function() {
+      
+    };
+  }
+  
+
 </script>
 
 <a href={articles[id].url} target="_blank">
@@ -9,6 +19,7 @@
       <h2 class="side-column">{articles[id].headline}</h2>
       <p data-testid="article-abstract" class="article-text">{articles[id].abstract}</p>
       <p data-testid="article-author" class="article-text">{articles[id].author}</p>
+      <button id="openComments">{numOfComments} Comments</button>
   </div>
 </a>
 
