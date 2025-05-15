@@ -1,7 +1,9 @@
-import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
+// used chatgpt to fix an error on finding package
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
-export default {
-  // Consult https://svelte.dev/docs#compile-time-svelte-preprocess
-  // for more information about preprocessors
-  preprocess: vitePreprocess(),
-}
+/** @type {import('svelte/compiler').PreprocessGroup} */
+const config = {
+  preprocess: vitePreprocess()
+};
+
+export default config;

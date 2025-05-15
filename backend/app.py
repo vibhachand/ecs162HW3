@@ -1,5 +1,6 @@
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, jsonify, send_from_directory, request
 import os
+import requests
 from flask_cors import CORS
 from pymongo import MongoClient
 
@@ -17,6 +18,46 @@ CORS(app)
 @app.route('/api/key')
 def get_key():
     return jsonify({'apiKey': os.getenv('NYT_API_KEY')})
+
+@app.route('/articles', methods=['GET'])
+def get_articles():
+    NYT_API_KEY = os.getenv('NYT_API_KEY')
+    
+    # find articles relevant to UC Davis
+    query = '"UC Davis"' 
+    url = f"https://api.nytimes.com/svc/search/v2/articlesearch.json?q={query}&api-key={NYT_API_KEY}"
+
+
+    try:
+        # GET request to NYI API
+        response = requests.get(url)
+        response.raise_for_status() #check for HTTP errors 
+        data = response.json()
+
+        # create empty array to store articles + their info
+        articles = []
+        # loop through each article in search results from API request
+        for article in data['response']['docs']:
+            multimedia = article['multimedia']
+            default = multimedia['default']
+            image_url = default['url']
+
+            # get the necessary information for each article
+            article_info = {
+                'headline': article['headline']['main'],
+                'url': article['web_url'],
+                'author': article['byline']['original'],
+                'abstract':  article['snippet'],
+                'image': image_url,
+                'caption': multimedia['caption']
+            }
+            # add article to articles list
+            articles.append(article_info)
+    
+        return jsonify({'articles': articles})
+
+    except Exception as e:
+        return jsonify({'error': str(e)})
 
 @app.route('/')
 @app.route('/<path:path>')

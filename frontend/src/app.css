@@ -1,79 +1,268 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+ /* import Nunito Sans */
+ @font-face {
+  font-family: 'Nunito Sans';
+  src: url('./assets/fonts/NunitoSans-VariableFont_YTLC,opsz,wdth,wght.ttf'), format('truetype');
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+/* import Title Font, Chomsky */
+@font-face {
+  font-family: 'Chomsky';
+  src: url('./assets/fonts/chomsky_font/Chomsky.woff') format('woff');
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
+/* format header */
 
-.card {
-  padding: 2em;
-}
+/* Used W3 schools tutorials on flexboxs for help with formatting header: https://www.w3schools.com/css/css3_flexbox.asp */
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+header{
+  position: relative;
   text-align: center;
+  font-family: 'Helvetica Neue', sans-serif;
+  padding-bottom: 3%;
+  padding-top: 3%;
+  font-size: 14px;
+  border-bottom: 5px double #3f3e3e;
+  margin-bottom: 20px;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+.logo{
+  max-height: 70px;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+.features{
+  padding-top: 3%;
+  display: flex; 
+  flex-direction: column;
+  text-align: left;
+  position: absolute;
+  top: 0;
+  > p{
+      margin-top: 5px;
   }
-  a:hover {
-    color: #747bff;
+}
+
+body{
+  padding-right: 5%;
+  padding-left: 5%;
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: column; 
+  background-color: rgb(255, 255, 255);
+  height: 110px;
+
+  justify-content: center;
+  align-items: center;
+
+  border-bottom: 2px solid rgb(209, 209, 209);
+}
+
+/* style title */
+.title {
+  text-align: center;
+  position: relative;
+  margin: 0;
+  bottom: 17px;
+  font-size: 60px;
+  font-style: bold;
+  font-family: Chomsky;
+}
+
+/* style date and day */
+#date, .day {
+  align-self: flex-start;
+  margin: 0;
+  top: 56px;
+  bottom: 10px;
+  left: 38px;
+  padding: 1px;
+  position: relative;
+  font-family: Nunito Sans;
+  font-size: 14px;
+}
+
+#date {
+  font-weight: bold;
+}
+
+
+/* format content/articles */
+
+/* Used W3 schools tutorial on how to format 3 columns on an html page : https://www.w3schools.com/howto/howto_css_three_columns.asp */
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 25% 50% 25%;
+  grid-template-areas: "column1 column2 column3";
+  width: 100%;
+}
+
+.column1 {
+  padding: 10px 30px;
+  grid-area: column1;
+  position: relative;
+}
+
+.column2 {
+  padding: 10px 25px;
+  grid-area: column2;
+}
+
+.column3 {
+  padding: 10px 30px;
+  position: relative;
+}
+
+/* add vertical line breaks */
+.column3::after {
+  top: 40px;
+  left: 0;
+  height: 90%;
+  width: 1px;
+  background-color: rgb(209, 209, 209);
+  content: "";
+  position: absolute;
+}
+
+/* style horizontal line breaks, inspired by a stack overflow post: https://stackoverflow.com/questions/14821087/what-is-the-right-way-to-create-a-horizontal-line-with-html-and-css */
+hr.col-break {
+  border-top: 1px solid rgb(209, 209, 209);
+}
+
+hr.footer-line-break {
+  position: relative;
+  border-top: 2px solid black;
+  width: 90%;
+  bottom: 22px;
+}
+
+/* style article text */
+h2, p {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.side-column {
+  font-weight: 175;
+}
+
+.main-column {
+  font-size: 27px;
+}
+
+#second-article {
+  font-size: 24px;
+}
+
+.article-text {
+  margin-top: -6px;
+  margin-bottom: 40px;
+  color: rgb(37, 37, 37);
+  font-size: 15.5px;
+  font-weight: lighter;
+}
+
+/* style images */
+.la-port, .iphone, .stars {
+  width: 100%;
+  height: auto;
+  margin-bottom: -10px;
+  margin-top: 30px;
+}
+
+/* --- Media queries --- */
+
+/* Used W3 schools tutorials for help with media queries: https://www.w3schools.com/css/css_rwd_mediaqueries.asp*/
+
+/* if 1025 pixels or greater, have a 3 column layout */
+@media screen and (min-width: 1025px) {
+  .grid-container {
+      grid-template-columns: 25% 50% 25%;
   }
-  button {
-    background-color: #f9f9f9;
+  #col1-separator2, #col2-separator2 {
+      display: none;
+  }
+}
+
+/* if 768-1024 pixels, have a 2 column layout */
+@media screen and (max-width: 1024px) {
+  .grid-container {
+      grid-template-columns: 60% 40%;
+      grid-template-areas:
+          "column2 column1"
+          "column2 column3";
+  }
+  /*hide date*/
+  .features{
+    display: none;
+}
+  /* adjust side-column header font size */
+  .side-column {
+      font-size: 23px;
+  }
+  /* adjust main-column header font size */
+  #second-article {
+      font-size: 28px;
+      margin-top: 30px;
+  }
+  /* adjust spacing */
+  #col1-separator2 {
+      margin-bottom: -18px;
+  }
+  .title {
+      margin-top: 42px;
+  }
+  .main-column {
+      margin-bottom: 35px;
+  }
+  #col2-separator1 {
+      margin-top: 60px;
+      margin-bottom: 35px;
+  }
+  #col2-separator2 {
+      display: none;
+  }
+  /* adjust vertical line styling */
+  .column1::after {
+      top: 35px;
+      left: 0;
+      height: 150%;
+      width: 1px;
+      background-color: rgb(209, 209, 209);
+      content: "";
+      position: absolute;
+  }
+  .column3:after {
+      display: none;
+  }
+}
+
+/* if mobile, use a single column layout */
+@media screen and (max-width: 767px) {
+  .grid-container {
+      grid-template-columns: 100%;
+      /* maintain proper column order */
+      grid-template-areas: 
+          "column2"
+          "column1"
+          "column3";
+  }
+  /* adjust font size and spacing */
+  .title {
+      font-size: 52px;
+  }
+  #col2-separator1 {
+      margin-bottom: 25px;
+  }
+  .column1::after {
+      display: none;
+  }
+}
+
+/* additional styling for smaller mobile screens */
+@media screen and (max-width: 450px) {
+  .title {
+      font-size: 40px;
   }
 }
