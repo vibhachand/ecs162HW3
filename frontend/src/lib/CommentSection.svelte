@@ -1,5 +1,6 @@
 <script>
     let {numOfComments = 0} = $props();
+    import Comment from './Comment.svelte';
 </script>
 
 <div class="overlay"></div>
@@ -9,11 +10,17 @@
     <h2>Comments <span id="numOfComments">{numOfComments}</span></h2>
     <form>
         <textarea id="comment" required placeholder="Share your thoughts."></textarea>
-        <button type="submit">Post Comment</button>
+        <button type="submit">SUBMIT</button>
     </form>
+    <div id="commentsContainer">
+        <Comment username="student" comment="Blah blah blah."/>
+    </div>
 </div>
 
 <style>
+    *{
+        font-family: Arial, Helvetica, sans-serif;
+    }
     div{
         width: 450px;
         height: 100vh;
@@ -23,11 +30,12 @@
         top: 0;
         z-index: 2;
         padding: 2vw 5vw 2vw 5vw;
-        
     }
-    h2{
-        font-family: Arial, Helvetica, sans-serif;
+    #commentsContainer{
+        position: relative;
+        padding-left: 0
     }
+    
     /* gray overlay to the left of comment section */
     .overlay{
         margin: 0px;
@@ -43,10 +51,12 @@
         resize: none; /* Disables resizing */
         padding: 15px;
         border-radius: 5px;
+        font-size: 16px;
     }
+   
     #comment{
         width: 100%;
-        height: 20vh;
+        height: 30px;
     }
     form{
         display: flex;
@@ -54,10 +64,19 @@
         gap: 10px;
     }
     button{
-        margin-top: 20px;
+        margin-top: 7px;
         width: fit-content;
-        padding: 10px;
+        padding: 5px 6px;
         cursor: pointer;
+        font-weight: bold;
+        background: white;
+        border-radius: 5px;
+        border: 1px gray solid;
+    }
+    button:hover{
+        color: white;
+        background: #78919e;
+        border-color: #78919e;
     }
 
     /* @media screen and (max-width: 767px) {
