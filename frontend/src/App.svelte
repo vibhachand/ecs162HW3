@@ -18,8 +18,15 @@
     image: string | null;
     caption: string;
   }[] = [];
-
+  // from TA's OH code
+  // async function handleLogin(){
+  //   const authUrl = 'http://localhost:8000/login'
+  //   window.location.href = authUrl;
+  // }
   onMount(async () => {
+    // from TA's OH code:
+    // const url = new URL(window.location.href);
+    // userEmail = url.searchParams.get('user');
     try {
       const res = await fetch('/api/key');
       const data = await res.json();
@@ -41,9 +48,9 @@
 
 
 <main>
-    <!--header includes title and date -->
-    <!-- UNCOMMENT THE LINE BELOW TO SHOW COMMENT SECTION -->
-    <!-- <CommentSection/> -->
+    // <!--header includes title and date -->
+    // <!-- UNCOMMENT THE LINE BELOW TO SHOW COMMENT SECTION -->
+    <CommentSection/>
     <div style="z-index: 1;">
     <header>
         <img class="logo" alt="logo of new york times" src="./src/assets/The_New_York_Times_logo.png">
