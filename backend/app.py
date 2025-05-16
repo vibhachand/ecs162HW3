@@ -1,12 +1,18 @@
-from flask import Flask, redirect, url_for, session, request
+from flask import Flask, redirect, url_for, session, request, jsonify
 import requests
 from authlib.integrations.flask_client import OAuth
+from flask_cors import CORS
 from authlib.common.security import generate_token
 import os
 
-app = Flask(__name__)
-app.secret_key = os.urandom(24)
+# app = Flask(__name__)
 
+static_path = os.getenv('STATIC_PATH','static')
+template_path = os.getenv('TEMPLATE_PATH','templates')
+
+app = Flask(__name__, static_folder=static_path, template_folder=template_path)
+app.secret_key = os.urandom(24)
+CORS(app)
 
 oauth = OAuth(app)
 

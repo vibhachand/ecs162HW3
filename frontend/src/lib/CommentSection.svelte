@@ -23,6 +23,10 @@
         top: 0;
         z-index: 2;
         padding: 2vw 5vw 2vw 5vw;
+        
+    }
+    h2{
+        font-family: Arial, Helvetica, sans-serif;
     }
     /* gray overlay to the left of comment section */
     .overlay{
@@ -73,5 +77,6 @@
 
     #numOfComments{
         font-weight: normal;
+        font-family: Arial, Helvetica, sans-serif;
     }
 </style>
