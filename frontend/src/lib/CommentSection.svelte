@@ -1,19 +1,66 @@
-<script>
-    let {numOfComments = 0} = $props();
+<script lang="ts">
     import Comment from './Comment.svelte';
+    import { onMount } from 'svelte';
+    
+    let {numOfComments = 0} = $props();
+    let newComment = "";
+    
+    interface Comment {
+        username: string;
+        comment: string;
+        isReply?: boolean;
+    }
+
+    let comments: Comment[] = [];
+    
+    onMount(async () => {
+        await fetchComments();
+    });
+    
+    async function postComment(e: SubmitEvent){
+        e.preventDefault();
+        // Send a POST request to the Flask backend at /add_data
+        const response = await fetch('http://localhost:8000/add_data', {
+            method: 'POST', 
+            headers: {
+                'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify({
+                username: 'student',       // Hardcoded username (can be dynamic later)
+                comment: newComment        
+            })
+        });
+        if (response.ok) {
+            // Clear the input field after successful submission
+            newComment = "";
+            await fetchComments();
+        } else {
+            console.error('Failed to submit comment');
+        }
+    }
+    async function fetchComments() {
+        const res = await fetch('http://localhost:8000/get_comments');
+        const data = await res.json();
+        comments = data;
+        numOfComments = comments.length;
+    }
 </script>
 
-<div class="overlay"></div>
+<div class="overlay" style="position: fixed; "></div>
 
 <!-- comment section  -->
-<div>
+<div style="position: fixed; overflow-y: auto;">
     <h2>Comments <span id="numOfComments">{numOfComments}</span></h2>
-    <form>
-        <textarea id="comment" required placeholder="Share your thoughts."></textarea>
+    <form onsubmit={postComment}>
+        <textarea bind:value={newComment} id="comment" required placeholder="Share your thoughts."></textarea>
         <button type="submit">SUBMIT</button>
     </form>
     <div id="commentsContainer">
         <Comment username="student" comment="Blah blah blah."/>
+        <Comment username="student" comment="Blah blah blah." isReply={true}/>
+        {#each comments as c}
+            <Comment username={c.username} comment={c.comment}/>
+        {/each}
     </div>
 </div>
 
