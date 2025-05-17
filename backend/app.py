@@ -3,6 +3,7 @@ import requests
 from authlib.integrations.flask_client import OAuth
 from flask_cors import CORS
 from authlib.common.security import generate_token
+from pymongo import MongoClient
 import os
 
 # app = Flask(__name__)
@@ -18,6 +19,9 @@ oauth = OAuth(app)
 
 nonce = generate_token()
 
+client = MongoClient('mongodb://localhost:27017/')
+db = client['comments']
+collection = db['data']
 
 oauth.register(
     name=os.getenv('OIDC_CLIENT_NAME'),
@@ -31,6 +35,19 @@ oauth.register(
     device_authorization_endpoint="http://dex:5556/device/code",
     client_kwargs={'scope': 'openid email profile'}
 )
+
+@app.route('/add_data', methods=['POST'])
+def add_data():
+    data = request.get_json()
+    if not data:
+        return jsonify({'error': 'No data provided'}), 400
+    collection.insert_one(data)
+    return jsonify({'message': 'Data added to MongoDB'}), 201
+
+@app.route('/get_comments')
+def get_comments():
+    comments = list(collection.find({}, {'_id': 0}))  # exclude MongoDB's _id
+    return jsonify(comments)
 
 @app.route('/api/key')
 def get_key():
