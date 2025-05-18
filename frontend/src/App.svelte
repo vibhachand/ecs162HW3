@@ -117,10 +117,10 @@
             {#if articles.length > 2}
                
                 <!-- column1: first article -->
-                <Article id = 0 articles={articles} numOfComments = 0/>
+                <Article id = 0 articles={articles} />
                 
                 <!-- column1: second article -->
-                <Article id = 1 articles={articles} hideHr={true} numOfComments = 0/>
+                <Article id = 1 articles={articles} hideHr={true} />
                 
             {:else}
                 <!-- Placeholder content -->
@@ -132,10 +132,10 @@
         <!-- column2: main column -->
         <div class="column2">
             {#if articles.length > 4}
-                <Article id = 3 articles={articles} numOfComments = 0/>
+                <Article id = 3 articles={articles} />
               
                 <!-- column2: second article -->
-                <Article id = 4 articles={articles} hideHr={true} numOfComments = 0/>
+                <Article id = 4 articles={articles} hideHr={true} />
             {:else}
                 <!-- Placeholder content -->
                 <h2 class="main-column">Loading...</h2>
@@ -146,10 +146,10 @@
         
         <div class="column3">
             {#if articles.length > 6}
-                <Article id=5 articles={articles} numOfComments = 0/>
+                <Article id=5 articles={articles} />
                 
                 <!-- column3: second article -->
-                <Article id = 6 articles={articles} hideHr={true} numOfComments = 0/>
+                <Article id = 6 articles={articles} hideHr={true} />
             {:else}
                 <!-- Placeholder content -->
                 <h2 class="side-column">Loading...</h2>

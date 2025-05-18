@@ -2,7 +2,7 @@
     import Comment from './Comment.svelte';
     import { onMount } from 'svelte';
     
-    let {articleName = null} = $props();
+    let {articleName} = $props();
 
     let state = $state({
         newComment: "",
@@ -11,17 +11,20 @@
     })
     
     interface Comment {
+        _id: string;
         username: string;
         comment: string;
-        article: "test";
+        article: string;
         isReply?: boolean;
+        comment_id?: number;
     }
 
-    
+    // loads and displays all existing comments
     onMount(async () => {
-        await fetchComments("test");
+        await fetchComments(articleName);
     });
     
+    // insert comment into mongodb
     async function postComment(e: SubmitEvent){
         e.preventDefault();
         console.log("Submitting comment:", state.newComment); 
@@ -32,16 +35,18 @@
                 'Content-Type': 'application/json' 
             },
             body: JSON.stringify({
-                article: "test",
+                article: articleName,
                 username: 'student',       // Hardcoded username (can be dynamic later)
-                comment: state.newComment        
+                comment: state.newComment,
+                comment_id: "",
+                isReply: false        
             })
         });
         
         if (response.ok) {
             // Clear the input field after successful submission
             state.newComment = "";
-            await fetchComments("test");
+            await fetchComments(articleName);
         } else {
             console.error('Failed to submit comment');
         }
@@ -59,17 +64,18 @@
 <div class="overlay" style="position: fixed; "></div>
 
 <!-- comment section  -->
-<div style="position: fixed; overflow-y: auto; padding-bottom: 25px;">
+<div class="container">
     <h1>{articleName}</h1>
     <h2>Comments <span id="numOfComments">{state.numOfComments}</span></h2>
+    <!-- comment form for new comment -->
     <form onsubmit={postComment}>
         <textarea bind:value={state.newComment} id="comment" required placeholder="Share your thoughts."></textarea>
         <button type="submit">SUBMIT</button>
     </form>
     <div id="commentsContainer">
-        
         {#each state.comments as c}
-            <Comment username={c.username} comment={c.comment} articleName={c.article}/>
+            <!-- pass the comment's username, comment, and _id (to be used to identify which parent comment a reply belongs to) as props to Comment component -->
+            <Comment username={c.username} comment={c.comment} ogComment_id={c._id} isReply={false}/>
         {/each}
     </div>
 </div>
@@ -77,6 +83,19 @@
 <style>
     *{
         font-family: Arial, Helvetica, sans-serif;
+    }
+    .container{
+        position: fixed; 
+        overflow-y: auto; 
+        padding-bottom: 25px;
+    }
+    h1{
+        margin-top: 0px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #cccecf;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
     div{
         width: 450px;
@@ -120,21 +139,7 @@
         flex-direction: column;
         gap: 10px;
     }
-    button{
-        margin-top: 7px;
-        width: fit-content;
-        padding: 5px 6px;
-        cursor: pointer;
-        font-weight: bold;
-        background: white;
-        border-radius: 5px;
-        border: 1px gray solid;
-    }
-    button:hover{
-        color: white;
-        background: #78919e;
-        border-color: #78919e;
-    }
+    
 
     #numOfComments{
         font-weight: normal;

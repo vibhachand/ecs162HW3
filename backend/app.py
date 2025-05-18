@@ -76,8 +76,20 @@ def add_data():
 @app.route('/get_comments')
 def get_comments():
     article_id = request.args.get('article')
-    articleComments = collection.find({"article": article_id})
+    articleComments = collection.find({
+        "article": article_id,
+        "isReply": False
+    })
     comments = list(articleComments)
+    for c in comments:
+        c['_id'] = str(c['_id'])  # Convert ObjectId to string
+    return jsonify(comments)
+
+@app.route('/get_replies')
+def get_replies():
+    comment_id = request.args.get('comment_id')
+    comment_replies = collection.find({"comment_id": comment_id})
+    comments = list(comment_replies)
     for c in comments:
         c['_id'] = str(c['_id'])  # Convert ObjectId to string
     return jsonify(comments)

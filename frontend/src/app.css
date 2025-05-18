@@ -14,6 +14,21 @@
 /* format header */
 
 /* Used W3 schools tutorials on flexboxs for help with formatting header: https://www.w3schools.com/css/css3_flexbox.asp */
+button{
+  margin-top: 7px;
+  width: fit-content;
+  padding: 5px 6px;
+  cursor: pointer;
+  font-weight: bold;
+  background: white;
+  border-radius: 5px;
+  border: 1px gray solid;
+}
+button:hover{
+  color: white;
+  background: #78919e;
+  border-color: #78919e;
+} 
 
 header{
   position: relative;
@@ -124,7 +139,9 @@ body{
   padding-right: 5%;
   padding-left: 5%;
 }
-
+hr{
+  margin-top: 5%;
+}
 .flex-container {
   display: flex;
   flex-direction: column; 

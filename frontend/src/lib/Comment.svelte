@@ -1,20 +1,72 @@
-<script>
-    let {username, comment, isReply = false, replies = null, articleName = null} = $props();
+<script lang="ts">
+    let {username, comment, isReply = false, replies = null, ogComment_id} = $props();
+    import { onMount } from 'svelte';
+
     let state = $state({
         showReplySection: false,
-        replyText: ''
+        newReply: '',
+        replies: [] as Comment[]
     })
+
+    interface Comment {
+        username: string;
+        comment: string;
+        article: "test";
+        isReply?: boolean;
+        comment_id?: number;
+    }
 
     function toggleReplySection(){
         state.showReplySection = !state.showReplySection;
     }
-    function submitReply(){
 
+    // load all existing replies which updates state.replies, thus displaying it in real time
+    onMount(async () => {
+        await fetchReplies(ogComment_id);
+    });
+    
+    // insert reply to mongo db
+    async function postReply(e: SubmitEvent){
+        e.preventDefault();
+        console.log("Submitting comment:", state.newReply); 
+        // Send a POST request to the Flask backend at /add_data
+        const response = await fetch('http://localhost:8000/api/add_data', {
+            method: 'POST', 
+            headers: {
+                'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify({
+                _id: "",
+                article: "test",
+                username: 'student',       // Hardcoded username (can be dynamic later)
+                comment: state.newReply,
+                isReply: true,
+                comment_id: ogComment_id     
+            })
+        });
+        
+        if (response.ok) {
+            // Clear the input field after successful submission
+            state.newReply = "";
+            await fetchReplies(ogComment_id);
+        } else {
+            console.error('Failed to submit comment');
+        }
+    }
+
+    // fetch replies from mongo db, want only replies with the specified comment_id (so we know what original comment the reply comment is under)
+    async function fetchReplies(ogComment_id: string){
+        const res = await fetch(`http://localhost:8000/get_replies?comment_id=${ogComment_id}`);
+        const data = await res.json();
+        state.replies = data;
+        console.log("Replies: ");
+        console.log(state.replies);
+        // state.numOfComments = state.comments.length;
     }
     
 </script>
 
-<div style="margin-top: 20px; border-bottom: 1px #cccecf solid; padding-bottom: 15px; ">
+<div class="container">
     <div class="userInfo">
         <!-- TO-DO: move image to assets?-->
         <img id="pfp" alt="profile icon" src="https://static-00.iconduck.com/assets.00/profile-circle-icon-2048x2048-cqe5466q.png" />
@@ -30,28 +82,28 @@
     </div>
     <div>
         {#if state.showReplySection}
-            <div class="reply">
-                <textarea placeholder="Share your reply."></textarea>
+            <form onsubmit={postReply} class="reply">
+                <textarea bind:value={state.newReply} placeholder="Share your reply."></textarea>
                 <div id="submitReplyDiv">
-                    <button onclick={submitReply}>SUBMIT</button>
+                    <button type="submit">SUBMIT</button>
                 </div>
-            </div>
-            
+            </form> 
         {/if}
-        <!-- add code to iterate through each reply -->
-        <!--<div class="othersReply">
+        {#each state.replies as r}
+            <div class="othersReply">
             <div class="userInfo">
-                
                 <img id="pfp" alt="profile icon" src="https://static-00.iconduck.com/assets.00/profile-circle-icon-2048x2048-cqe5466q.png" />
                 <div>
                     <p class="username"><strong>user</strong></p>
                 </div>
             </div>
             <div>
-                <p class="comment">Hi everyone</p>              
+                <p class="comment">{r.comment}</p>              
             </div>
          </div>
-        -->
+       
+        {/each}
+        
         
     </div>
     
@@ -60,6 +112,11 @@
 <style>
     *{
         font-family: Arial, Helvetica, sans-serif;
+    }
+    .container{
+        margin-top: 20px; 
+        border-bottom: 1px #cccecf solid; 
+        padding-bottom: 15px; 
     }
     img{
         width: 35px;
@@ -103,21 +160,7 @@
             border-radius: 5px;
         }
     }
-    button{
-        margin-top: 7px;
-        width: fit-content;
-        padding: 5px 6px;
-        cursor: pointer;
-        font-weight: bold;
-        background: white;
-        border-radius: 5px;
-        border: 1px gray solid;
-    }
-    button:hover{
-        color: white;
-        background: #78919e;
-        border-color: #78919e;
-    }
+    
     #submitReplyDiv{
         display: flex;
         justify-content: flex-end;
