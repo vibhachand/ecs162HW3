@@ -15,10 +15,28 @@ app = Flask(__name__, static_folder=static_path, template_folder=template_path)
 app.secret_key = os.urandom(24)
 CORS(app)
 
+# idk
+CORS(app, supports_credentials=True, origins='http://localhost:5173')
+
+# define user class
+from typing import NamedTuple
+
+class UserTuple(NamedTuple):
+    user_id : int
+    name : str
+    email : str
+
 oauth = OAuth(app)
 
 nonce = generate_token()
 
+# establish user database
+mongo_uri = os.environ["MONGO_URI"]
+client2 = MongoClient(mongo_uri)
+db2 = client2["mydb"]
+users_collection = db2["users"]
+
+# establish comments database
 client = MongoClient('mongodb://root:rootpassword@mongo:27017/')
 db = client['comments']
 collection = db['data']
@@ -116,23 +134,46 @@ def get_articles():
 def home():
     user = session.get('user')
     if user:
-        return f"<h2>Logged in as {user['email']}</h2><a href='/logout'>Logout</a>"
-    return '<a href="/login">Login with Dex</a>'
+        return jsonify({
+        'email': user.get('email'),
+        'name': user.get('name'),
+        'loggedIn': True
+    })
+    return jsonify({'loggedIn': False})
 
 @app.route('/login')
 def login():
+    client_name = os.getenv('OIDC_CLIENT_NAME')
     session['nonce'] = nonce
     redirect_uri = 'http://localhost:8000/authorize'
-    return oauth.flask_app.authorize_redirect(redirect_uri, nonce=nonce)
+    return getattr(oauth, client_name).authorize_redirect(redirect_uri, nonce=nonce)
 
 @app.route('/authorize')
 def authorize():
-    token = oauth.flask_app.authorize_access_token()
-    nonce = session.get('nonce')
+    client_name = os.getenv('OIDC_CLIENT_NAME')
+    print("Authorizing with client:", client_name)
 
-    user_info = oauth.flask_app.parse_id_token(token, nonce=nonce)  # or use .get('userinfo').json()
+    token = getattr(oauth, client_name).authorize_access_token()
+    print("Access token received.")
+
+    nonce = session.get('nonce')
+    user_info = getattr(oauth, client_name).parse_id_token(token, nonce=nonce)
+
     session['user'] = user_info
-    return redirect('/')
+
+    email = user_info.get('email')
+    print(email)
+    name = user_info.get('name')
+
+    curr_user = users_collection.find_one({'email': email})
+
+    if not curr_user:
+        new_user = {'email': email, 'name': name}
+        users_collection.insert_one(new_user)
+
+
+    # Redirect to frontend with login status
+    return redirect(f'http://localhost:5173/?loggedIn=true&email={email}')
 
 @app.route('/logout')
 def logout():

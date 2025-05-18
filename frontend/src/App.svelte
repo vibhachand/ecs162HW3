@@ -7,6 +7,32 @@
 
   let apiKey: string = '';
 
+  let loggedIn = false;
+  let email = "";
+
+  let showAccount = false;
+
+  // toggle panel at log in
+  function toggleAccount() {
+    showAccount = !showAccount;
+  }
+
+  // logout function
+  async function logout() {
+    await fetch('http://localhost:8000/logout', {
+      method: 'GET'
+    });
+    
+    window.location.href = '/';
+  }
+
+  // log in function
+  function redirectLogin() {
+    const currentUrl = encodeURIComponent(window.location.href);
+    window.location.href = `http://localhost:8000/login?returnTo=${currentUrl}`;
+  }
+
+
   let commentSectionVisible = false;
 
   // format of article objects
@@ -28,6 +54,20 @@
     // const url = new URL(window.location.href);
     // userEmail = url.searchParams.get('user');
     try {
+      console.log("here")
+
+      const params = new URLSearchParams(window.location.search);
+      loggedIn = params.get('loggedIn') === 'true';
+      email = params.get('email');
+      console.log(loggedIn)
+      console.log(email)
+
+
+    } catch (err) {
+      console.error('Error checking login status:', err);
+    }
+
+    try {
       const res = await fetch('http://localhost:8000/api/key');
       const data = await res.json();
       apiKey = data.apiKey;
@@ -48,17 +88,30 @@
 
 
 <main>
-    // <!--header includes title and date -->
-    // <!-- UNCOMMENT THE LINE BELOW TO SHOW COMMENT SECTION -->
-    <CommentSection/>
+    <!--header includes title and date -->
+    <!-- UNCOMMENT THE LINE BELOW TO SHOW COMMENT SECTION -->
+    <!-- <CommentSection/> -->
     <div style="z-index: 1;">
     <header>
+        {#if loggedIn}
+          <button id="account-button" on:click={toggleAccount}>Account</button>
+        {:else}
+          <button id="login-button" on:click={redirectLogin}>LOG IN</button>
+        {/if}
         <img class="logo" alt="logo of new york times" src="./src/assets/The_New_York_Times_logo.png">
         <div class="features">
           <Date/>
           <p class="date-text">Today's Paper</p>
         </div>
     </header>
+    {#if showAccount}
+      <div class="account">
+        <button class="close" on:click={toggleAccount}>x</button>
+        <p id="email">{email}</p>
+        <p id="greeting">Good Afternoon.</p>
+        <button id="logout-button" on:click={logout}>Log out</button>
+      </div>
+    {/if}
     <div class="grid-container">
         <div class="column1">
             {#if articles.length > 2}

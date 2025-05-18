@@ -26,6 +26,84 @@ header{
   margin-bottom: 20px;
 }
 
+/* style log in and account buttons */
+#login-button {
+  position: absolute;
+  right: 35px;
+  top: 30px;
+  transform: translateY(-50%);
+  background-color: rgb(97, 125, 163);
+  border-radius: 7px;
+  border: none;
+  height: 28px;
+  width: 75px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#account-button {
+  position: absolute;
+  right: 35px;
+  top: 30px;
+  transform: translateY(-50%);
+  background-color: rgb(255, 255, 255);
+  border-radius: 7px;
+  border: 1px solid rgb(0, 0, 0);
+  height: 28px;
+  width: 75px;
+  color: rgb(0, 0, 0);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* style account panel */
+.account {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 20vw;
+  height: 100vh;
+  background-color: white;
+  z-index: 1000;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.close {
+  position: absolute;
+  cursor: pointer;
+  border: none;
+  background: none;
+  top: 15px;
+  right: 20px;
+  font-size: 20px;
+}
+
+#email {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 80px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgb(169, 168, 168); 
+}
+
+#greeting {
+  font-size: 30px;
+  font-weight: 20px;
+}
+
+#logout-button {
+  margin-top: 400px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  padding-bottom: 2px;
+  border-bottom: 1px solid rgb(169, 168, 168); 
+}
+
 .logo{
   max-height: 70px;
 }
