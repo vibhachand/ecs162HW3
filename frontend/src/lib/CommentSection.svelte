@@ -2,64 +2,74 @@
     import Comment from './Comment.svelte';
     import { onMount } from 'svelte';
     
-    let {numOfComments = 0} = $props();
-    let newComment = "";
+    let {articleName = null} = $props();
+
+    let state = $state({
+        newComment: "",
+        numOfComments: 0,
+        comments: [] as Comment[]
+    })
     
     interface Comment {
         username: string;
         comment: string;
+        article: "test";
         isReply?: boolean;
     }
 
-    let comments: Comment[] = [];
     
     onMount(async () => {
-        await fetchComments();
+        await fetchComments("test");
     });
     
     async function postComment(e: SubmitEvent){
         e.preventDefault();
+        console.log("Submitting comment:", state.newComment); 
         // Send a POST request to the Flask backend at /add_data
-        const response = await fetch('http://localhost:8000/add_data', {
+        const response = await fetch('http://localhost:8000/api/add_data', {
             method: 'POST', 
             headers: {
                 'Content-Type': 'application/json' 
             },
             body: JSON.stringify({
+                article: "test",
                 username: 'student',       // Hardcoded username (can be dynamic later)
-                comment: newComment        
+                comment: state.newComment        
             })
         });
+        
         if (response.ok) {
             // Clear the input field after successful submission
-            newComment = "";
-            await fetchComments();
+            state.newComment = "";
+            await fetchComments("test");
         } else {
             console.error('Failed to submit comment');
         }
     }
-    async function fetchComments() {
-        const res = await fetch('http://localhost:8000/get_comments');
+
+    async function fetchComments(article_id: string) {
+        const res = await fetch(`http://localhost:8000/get_comments?article=${article_id}`);
         const data = await res.json();
-        comments = data;
-        numOfComments = comments.length;
+        state.comments = data;
+        console.log(state.comments);
+        state.numOfComments = state.comments.length;
     }
 </script>
 
 <div class="overlay" style="position: fixed; "></div>
 
 <!-- comment section  -->
-<div style="position: fixed; overflow-y: auto;">
-    <h2>Comments <span id="numOfComments">{numOfComments}</span></h2>
+<div style="position: fixed; overflow-y: auto; padding-bottom: 25px;">
+    <h1>{articleName}</h1>
+    <h2>Comments <span id="numOfComments">{state.numOfComments}</span></h2>
     <form onsubmit={postComment}>
-        <textarea bind:value={newComment} id="comment" required placeholder="Share your thoughts."></textarea>
+        <textarea bind:value={state.newComment} id="comment" required placeholder="Share your thoughts."></textarea>
         <button type="submit">SUBMIT</button>
     </form>
     <div id="commentsContainer">
-        <Comment username="student" comment="Blah blah blah."/>
-        <Comment username="student" comment="Blah blah blah." isReply={true}/>
-        {#each comments as c}
-            <Comment username={c.username} comment={c.comment}/>
+        
+        {#each state.comments as c}
+            <Comment username={c.username} comment={c.comment} articleName={c.article}/>
         {/each}
     </div>
 </div>
@@ -125,21 +135,6 @@
         background: #78919e;
         border-color: #78919e;
     }
-
-    /* @media screen and (max-width: 767px) {
-        .overlay{
-            display: none;
-        }
-        div{
-            width: 100vw;
-            height: 100vh;
-            position: relative;
-            padding: 10vw;
-        }
-        #comment{
-            width: 70vw;
-        }
-    } */
 
     #numOfComments{
         font-weight: normal;
