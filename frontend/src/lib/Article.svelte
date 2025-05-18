@@ -1,7 +1,13 @@
 <!-- Displays article info -->
-<script>
-  let { id, articles, hideHr = false, numOfComments} = $props();
-
+<script lang="ts">
+  let { id, articles, hideHr = false} = $props();
+  import Comment from './Comment.svelte';
+  import { onMount } from 'svelte';
+  let state = $state({
+        newComment: "",
+        numOfComments: 0,
+        comments: [] as Comment[]
+    })
   let openComments = document.getElementById("openComments");
   
   if(openComments){
@@ -9,7 +15,25 @@
       
     };
   }
+
+  interface Comment {
+        username: string;
+        comment: string;
+        article: "test";
+        isReply?: boolean;
+    }
+
+    
+    onMount(async () => {
+        await fetchComments("test");
+    });
   
+  async function fetchComments(article_id: string) {
+        const res = await fetch(`http://localhost:8000/get_comments?article=${article_id}`);
+        const data = await res.json();
+        state.comments = data;
+        state.numOfComments = state.comments.length;
+    }
 
 </script>
 
@@ -19,7 +43,7 @@
       <h2 class="side-column">{articles[id].headline}</h2>
       <p data-testid="article-abstract" class="article-text">{articles[id].abstract}</p>
       <p data-testid="article-author" class="article-text">{articles[id].author}</p>
-      <button id="openComments">{numOfComments} Comments</button>
+      <button id="openComments">{state.numOfComments} Comments</button>
   </div>
 </a>
 

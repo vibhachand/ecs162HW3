@@ -28,7 +28,7 @@
     // const url = new URL(window.location.href);
     // userEmail = url.searchParams.get('user');
     try {
-      const res = await fetch('/api/key');
+      const res = await fetch('http://localhost:8000/api/key');
       const data = await res.json();
       apiKey = data.apiKey;
     } catch (error) {

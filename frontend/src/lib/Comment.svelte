@@ -1,5 +1,5 @@
 <script>
-    let {username, comment, isReply = false, replies = null} = $props();
+    let {username, comment, isReply = false, replies = null, articleName = null} = $props();
     let state = $state({
         showReplySection: false,
         replyText: ''
@@ -14,7 +14,7 @@
     
 </script>
 
-<div style="margin-top: 15px; border-bottom: 1px #cccecf solid; padding-bottom: 15px; ">
+<div style="margin-top: 20px; border-bottom: 1px #cccecf solid; padding-bottom: 15px; ">
     <div class="userInfo">
         <!-- TO-DO: move image to assets?-->
         <img id="pfp" alt="profile icon" src="https://static-00.iconduck.com/assets.00/profile-circle-icon-2048x2048-cqe5466q.png" />
@@ -39,9 +39,9 @@
             
         {/if}
         <!-- add code to iterate through each reply -->
-        <div class="othersReply">
+        <!--<div class="othersReply">
             <div class="userInfo">
-                <!-- TO-DO: move image to assets?-->
+                
                 <img id="pfp" alt="profile icon" src="https://static-00.iconduck.com/assets.00/profile-circle-icon-2048x2048-cqe5466q.png" />
                 <div>
                     <p class="username"><strong>user</strong></p>
@@ -51,6 +51,7 @@
                 <p class="comment">Hi everyone</p>              
             </div>
          </div>
+        -->
         
     </div>
     
@@ -71,6 +72,10 @@
         gap: 14px;
     }
    
+        .comment{
+            padding-left: 50px;
+            margin-top: 8px;
+        }
     
     #replyButton{
         background: none;
@@ -80,7 +85,7 @@
         color: #637080;
         margin: 0;
         cursor: pointer;
-        padding-left: 0;
+        padding-left: 50px;
     }
     #replyButton:hover{
         color: #8698b0;

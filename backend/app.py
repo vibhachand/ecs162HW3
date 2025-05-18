@@ -19,7 +19,7 @@ oauth = OAuth(app)
 
 nonce = generate_token()
 
-client = MongoClient('mongodb://localhost:27017/')
+client = MongoClient('mongodb://root:rootpassword@mongo:27017/')
 db = client['comments']
 collection = db['data']
 
@@ -36,18 +36,37 @@ oauth.register(
     client_kwargs={'scope': 'openid email profile'}
 )
 
-@app.route('/add_data', methods=['POST'])
+@app.route("/test-mongo")
+def test_mongo():
+    test_doc = {"message": "Hello, MongoDB!"}
+    collection.insert_one(test_doc)
+    return "Inserted test doc into MongoDB!"
+
+@app.route('/api/add_data', methods=['POST'])
 def add_data():
-    data = request.get_json()
-    if not data:
-        return jsonify({'error': 'No data provided'}), 400
-    collection.insert_one(data)
-    return jsonify({'message': 'Data added to MongoDB'}), 201
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'No data provided'}), 400
+        print("Received data:", data)
+        collection.insert_one(data)
+        return jsonify({'message': 'Data added to MongoDB'}), 201
+    except Exception as e:
+        print("Error inserting data:", e)
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/get_comments')
 def get_comments():
-    comments = list(collection.find({}, {'_id': 0}))  # exclude MongoDB's _id
+    article_id = request.args.get('article')
+    articleComments = collection.find({"article": article_id})
+    comments = list(articleComments)
+    for c in comments:
+        c['_id'] = str(c['_id'])  # Convert ObjectId to string
     return jsonify(comments)
+
+@app.route('/api/test')
+def test():
+    return "API is working!"
 
 @app.route('/api/key')
 def get_key():
