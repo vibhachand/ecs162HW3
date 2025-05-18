@@ -1,5 +1,5 @@
 <script lang="ts">
-    let {username, comment, isReply = false, replies = null, ogComment_id} = $props();
+    let {username, comment, isReply = false, replies = null, ogComment_id, articleName} = $props();
     import { onMount } from 'svelte';
 
     let state = $state({
@@ -11,7 +11,7 @@
     interface Comment {
         username: string;
         comment: string;
-        article: "test";
+        article: string;
         isReply?: boolean;
         comment_id?: number;
     }
@@ -25,6 +25,8 @@
         await fetchReplies(ogComment_id);
     });
     
+    console.log("ogComment_id before POST:", ogComment_id);
+
     // insert reply to mongo db
     async function postReply(e: SubmitEvent){
         e.preventDefault();
@@ -36,8 +38,7 @@
                 'Content-Type': 'application/json' 
             },
             body: JSON.stringify({
-                _id: "",
-                article: "test",
+                article: articleName,
                 username: 'student',       // Hardcoded username (can be dynamic later)
                 comment: state.newReply,
                 isReply: true,
@@ -76,7 +77,6 @@
     </div>
     <div>
         <p class="comment">{comment}</p>
-       
         <button id="replyButton" onclick={toggleReplySection}>{state.showReplySection ? 'Cancel' : 'Reply'}</button>
   
     </div>

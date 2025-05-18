@@ -58,7 +58,7 @@
 
       const params = new URLSearchParams(window.location.search);
       loggedIn = params.get('loggedIn') === 'true';
-      email = params.get('email');
+      // email = params.get('email');
       console.log(loggedIn)
       console.log(email)
 

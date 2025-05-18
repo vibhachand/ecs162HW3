@@ -75,7 +75,7 @@
     <div id="commentsContainer">
         {#each state.comments as c}
             <!-- pass the comment's username, comment, and _id (to be used to identify which parent comment a reply belongs to) as props to Comment component -->
-            <Comment username={c.username} comment={c.comment} ogComment_id={c._id} isReply={false}/>
+            <Comment username={c.username} comment={c.comment} ogComment_id={c._id} isReply={false} articleName={articleName}/>
         {/each}
     </div>
 </div>
