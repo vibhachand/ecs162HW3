@@ -3,7 +3,7 @@
     import { onMount } from 'svelte';
 
     let state = $state({
-        showReplySection: false,
+        showReplySection: false, 
         newReply: '',
         replies: [] as Comment[]
     })
@@ -16,6 +16,7 @@
         comment_id?: number;
     }
 
+    // show or hide reply form under parent comment
     function toggleReplySection(){
         state.showReplySection = !state.showReplySection;
     }
@@ -24,8 +25,6 @@
     onMount(async () => {
         await fetchReplies(ogComment_id);
     });
-
-    console.log("ogComment_id before POST:", ogComment_id);
 
     // insert reply to mongo db
     async function postReply(e: SubmitEvent){
@@ -39,7 +38,7 @@
             },
             body: JSON.stringify({
                 article: articleName,
-                username: 'student',       // Hardcoded username (can be dynamic later)
+                username: username,       // Hardcoded username (can be dynamic later)
                 comment: state.newReply,
                 isReply: true,
                 comment_id: ogComment_id     
@@ -68,18 +67,20 @@
 </script>
 
 <div class="container">
+    <!-- usernane and profile picture -->
     <div class="userInfo">
         <img id="pfp" alt="profile icon" src="https://static-00.iconduck.com/assets.00/profile-circle-icon-2048x2048-cqe5466q.png" />
         <div>
             <p class="username"><strong>{username}</strong></p>
         </div>
     </div>
+    <!-- comment text and reply button to open up reply form/hide it -->
     <div>
         <p class="comment">{comment}</p>
         <button id="replyButton" onclick={toggleReplySection}>{state.showReplySection ? 'Cancel' : 'Reply'}</button>
-  
     </div>
     <div>
+        <!-- display reply form if user opens it -->
         {#if state.showReplySection}
             <form onsubmit={postReply} class="reply">
                 <textarea bind:value={state.newReply} placeholder="Share your reply."></textarea>
@@ -88,6 +89,7 @@
                 </div>
             </form> 
         {/if}
+    <!-- display replies under parent comment -->
         {#each state.replies as r}
             <div class="othersReply">
             <div class="userInfo">

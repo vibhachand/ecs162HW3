@@ -185,7 +185,7 @@ def authorize():
 
 
     # Redirect to frontend with login status
-    return redirect(f'http://localhost:5173/?loggedIn=true&email={email}')
+    return redirect(f'http://localhost:5173/?loggedIn=true&email={email}&username={name}')
 
 @app.route('/logout')
 def logout():

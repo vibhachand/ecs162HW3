@@ -1,0 +1,13 @@
+From HW2 but also heavily applied in hw3:
+1. ChatGPT was used as a reference.
+2. Questions asked included help with code syntax, understanding code snippets from 
+    non-AI resources online (like asking "What does this code do"). ChatGPT also helped with debugging technical issues
+    with importing/using packages and running the program (like asking "Why am I getting this error?"). Syntax related 
+    prompts/questions included "examples of pytest to test API", and getting info from API requests like "headline': article['headline']['main']", 
+    and examples of integrating it with the frontend in App.svelte (onMount stuff).
+    
+    HW3 specific questions included general questions on how to connect to mongodb, as well as syntax structure on async functions that
+    dealt with inserting and retrieving data. Questions were also asked on unit testing and syntax to set up mock environments.
+    More specific lines are cited on the pytest file.
+3. ChatGPT was extremely helpful in resolving issues with running the program and understanding syntax patterns to reproduce
+    in our own code. It was also a tremendous help in setting up and running/connecting to mongodb. 

@@ -1,18 +1,17 @@
 <script lang="ts">
+    // keep track of whether or not user is logged in
     import { isLoggedIn } from '../sharedDataStore.js';
-
-
     import Comment from './Comment.svelte';
     import { onMount } from 'svelte';
     
-    let {articleName = null, onClose} = $props();
+    let {articleName = null, onClose, username} = $props();
 
     let state = $state({
         newComment: "",
         numOfComments: 0,
         comments: [] as Comment[]
     })
-    
+
     interface Comment {
         _id: string;
         username: string;
@@ -31,6 +30,7 @@
     async function postComment(e: SubmitEvent){
         e.preventDefault();
         console.log("Submitting comment:", state.newComment); 
+       
         // Send a POST request to the Flask backend at /add_data
         const response = await fetch('http://localhost:8000/api/add_data', {
             method: 'POST', 
@@ -39,7 +39,7 @@
             },
             body: JSON.stringify({
                 article: articleName,
-                username: 'student',       // Hardcoded username (can be dynamic later)
+                username: username,       // Hardcoded username (can be dynamic later)
                 comment: state.newComment,
                 comment_id: "",
                 isReply: false        
@@ -77,6 +77,7 @@
     <!-- comment form for new comment -->
     <form onsubmit={postComment}>
         <textarea bind:value={state.newComment} id="comment" required placeholder="Share your thoughts."></textarea>
+        <!-- only allow authorized users to comment -->
         {#if $isLoggedIn}
             <button type="submit">SUBMIT</button>
         {:else}
@@ -84,6 +85,7 @@
         {/if}
     </form>
     <div id="commentsContainer">
+        <!-- iterate through all the comments to be displayed-->
         {#each state.comments as c}
             <!-- pass the comment's username, comment, and _id (to be used to identify which parent comment a reply belongs to) as props to Comment component -->
             <Comment username={c.username} comment={c.comment} ogComment_id={c._id} isReply={false} articleName={articleName}/>

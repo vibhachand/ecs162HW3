@@ -3,15 +3,15 @@
   import { onMount } from 'svelte';
   import Date from './lib/Date.svelte';
   import Article from './lib/Article.svelte';
-  import CommentSection from './lib/CommentSection.svelte';
   import { isLoggedIn } from './sharedDataStore.js';
 
   let apiKey: string = '';
-
+  
   let loggedIn = false;
   export { loggedIn };
 
   let email = "";
+  let username = "";
 
   let showAccount = false;
 
@@ -34,10 +34,6 @@
     const currentUrl = encodeURIComponent(window.location.href);
     window.location.href = `http://localhost:8000/login?returnTo=${currentUrl}`;
   }
-
-
-  let commentSectionVisible = false;
-
   // format of article objects
   let articles: {
     headline: string;
@@ -53,9 +49,6 @@
   //   window.location.href = authUrl;
   // }
   onMount(async () => {
-    // from TA's OH code:
-    // const url = new URL(window.location.href);
-    // userEmail = url.searchParams.get('user');
     try {
       console.log("here")
 
@@ -64,8 +57,9 @@
       email = params.get('email');
       console.log(loggedIn)
       console.log(email)
-
+      username = params.get('username') || "";
       isLoggedIn.set(loggedIn);
+  
 
 
     } catch (err) {
@@ -88,14 +82,14 @@
       console.error('Error fetching articles:', error);
     }
   });
+
+  
 </script>
 
 
 
 <main>
     <!--header includes title and date -->
-    <!-- UNCOMMENT THE LINE BELOW TO SHOW COMMENT SECTION -->
-    <!-- <CommentSection/> -->
     <div style="z-index: 1;">
     <header>
         {#if loggedIn}
@@ -122,10 +116,10 @@
             {#if articles.length > 2}
                
                 <!-- column1: first article -->
-                <Article id = 0 articles={articles} />
+                <Article id = 0 articles={articles} username={username}/>
                 
                 <!-- column1: second article -->
-                <Article id = 1 articles={articles} hideHr={true} />
+                <Article id = 1 articles={articles} hideHr={true} username={username}/>
                 
             {:else}
                 <!-- Placeholder content -->
@@ -137,10 +131,10 @@
         <!-- column2: main column -->
         <div class="column2">
             {#if articles.length > 4}
-                <Article id = 3 articles={articles} />
+                <Article id = 3 articles={articles} username={username}/>
               
                 <!-- column2: second article -->
-                <Article id = 4 articles={articles} hideHr={true} />
+                <Article id = 4 articles={articles} hideHr={true} username={username}/>
             {:else}
                 <!-- Placeholder content -->
                 <h2 class="main-column">Loading...</h2>
@@ -151,10 +145,10 @@
         
         <div class="column3">
             {#if articles.length > 6}
-                <Article id=5 articles={articles} />
+                <Article id=5 articles={articles} username={username}/>
                 
                 <!-- column3: second article -->
-                <Article id = 6 articles={articles} hideHr={true} />
+                <Article id = 6 articles={articles} hideHr={true} username={username}/>
             {:else}
                 <!-- Placeholder content -->
                 <h2 class="side-column">Loading...</h2>

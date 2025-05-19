@@ -1,12 +1,14 @@
 <!-- Displays article info -->
 <script lang="ts">
+    import { onMount } from 'svelte';
 
-  let { id, articles, hideHr = false} = $props();
+  let { id, articles, hideHr = false, username} = $props();
   import CommentSection from './CommentSection.svelte';
-  import { onMount } from 'svelte';
+
+  let comments = [] as Comment[];
+
   let state = $state({
         numOfComments: 0,
-        comments: [] as Comment[],
         showCommentSection: false
     })
 
@@ -18,7 +20,25 @@
   function closeCommentSection(){
     state.showCommentSection = false;
   }
-
+    
+  interface Comment {
+      _id: string;
+      username: string;
+      comment: string;
+      article: string;
+      isReply?: boolean;
+      comment_id?: number;
+  }
+  onMount(async() => {
+    await fetchComments();
+  })
+  async function fetchComments() {
+        const res = await fetch(`http://localhost:8000/get_comments?article=${articles[id].headline}`);
+        const data = await res.json();
+        comments = data;
+        console.log(comments);
+        state.numOfComments = comments.length;
+    }
 </script>
 
 <div>
@@ -28,7 +48,7 @@
     <p data-testid="article-abstract" class="article-text">{articles[id].abstract}</p>
     <p data-testid="article-author" class="article-text">{articles[id].author}</p>
   </a>
-    <button onclick={ showCommentSection }>Comments</button>
+    <button onclick={ showCommentSection }>{state.numOfComments} Comments</button>
 </div>
 
 <!-- don't want articles on the last row to have bottom divider -->
@@ -38,6 +58,7 @@
 
 {#if state.showCommentSection}
   <CommentSection 
+    username={username}
     articleName={articles[id].headline}
     onClose={closeCommentSection}
   />
