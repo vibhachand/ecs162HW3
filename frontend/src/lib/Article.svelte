@@ -9,49 +9,26 @@
         showCommentSection: false
     })
 
-  // let openComments = document.getElementById("openComments");
-  
-  // if(openComments){
-  //   openComments.onclick = function() {
-      
-  //   };
-  // }
-
-  // interface Comment {
-  //       username: string;
-  //       comment: string;
-  //       article: "test";
-  //       isReply?: boolean;
-  //   }
-
-    
-    // onMount(async () => {
-    //     await fetchComments("test");
-    // });
-  
-  // async function fetchComments(article_id: string) {
-  //       const res = await fetch(`http://localhost:8000/get_comments?article=${article_id}`);
-  //       const data = await res.json();
-  //       state.comments = data;
-  //       state.numOfComments = state.comments.length;
-  //   }
-
   function showCommentSection(){
     state.showCommentSection = true;
   }
 
+  // Add this function to close the comment section
+  function closeCommentSection(){
+    state.showCommentSection = false;
+  }
+
 </script>
 
-
-  <div>
-    <a href={articles[id].url} target="_blank">
-      <img src={articles[id].image} alt={articles[id].caption}/>
-      <h2 class="side-column">{articles[id].headline}</h2>
-      <p data-testid="article-abstract" class="article-text">{articles[id].abstract}</p>
-      <p data-testid="article-author" class="article-text">{articles[id].author}</p>
-    </a>
-      <button onclick={ showCommentSection }>Comments</button>
-  </div>
+<div>
+  <a href={articles[id].url} target="_blank">
+    <img src={articles[id].image} alt={articles[id].caption}/>
+    <h2 class="side-column">{articles[id].headline}</h2>
+    <p data-testid="article-abstract" class="article-text">{articles[id].abstract}</p>
+    <p data-testid="article-author" class="article-text">{articles[id].author}</p>
+  </a>
+    <button onclick={ showCommentSection }>Comments</button>
+</div>
 
 <!-- don't want articles on the last row to have bottom divider -->
 {#if !hideHr}
@@ -59,7 +36,10 @@
 {/if}
 
 {#if state.showCommentSection}
-  <CommentSection articleName={articles[id].headline}/>
+  <CommentSection 
+    articleName={articles[id].headline}
+    onClose={closeCommentSection}
+  />
 {/if}
 
 <style>
