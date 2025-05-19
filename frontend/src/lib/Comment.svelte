@@ -24,7 +24,7 @@
     onMount(async () => {
         await fetchReplies(ogComment_id);
     });
-    
+
     console.log("ogComment_id before POST:", ogComment_id);
 
     // insert reply to mongo db
@@ -55,7 +55,7 @@
         }
     }
 
-    // fetch replies from mongo db, want only replies with the specified comment_id (so we know what original comment the reply comment is under)
+    // fetch replies under a specified parent comment (identified by ogComment_id)
     async function fetchReplies(ogComment_id: string){
         const res = await fetch(`http://localhost:8000/get_replies?comment_id=${ogComment_id}`);
         const data = await res.json();
@@ -69,7 +69,6 @@
 
 <div class="container">
     <div class="userInfo">
-        <!-- TO-DO: move image to assets?-->
         <img id="pfp" alt="profile icon" src="https://static-00.iconduck.com/assets.00/profile-circle-icon-2048x2048-cqe5466q.png" />
         <div>
             <p class="username"><strong>{username}</strong></p>

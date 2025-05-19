@@ -4,9 +4,11 @@ from authlib.integrations.flask_client import OAuth
 from flask_cors import CORS
 from authlib.common.security import generate_token
 from pymongo import MongoClient
+from dotenv import load_dotenv
 import os
 
 # app = Flask(__name__)
+load_dotenv()
 
 static_path = os.getenv('STATIC_PATH','static')
 template_path = os.getenv('TEMPLATE_PATH','templates')
@@ -31,7 +33,7 @@ oauth = OAuth(app)
 nonce = generate_token()
 
 # establish user database
-mongo_uri = os.environ["MONGO_URI"]
+mongo_uri = os.getenv("MONGO_URI")
 client2 = MongoClient(mongo_uri)
 db2 = client2["mydb"]
 users_collection = db2["users"]
@@ -54,12 +56,8 @@ oauth.register(
     client_kwargs={'scope': 'openid email profile'}
 )
 
-@app.route("/test-mongo")
-def test_mongo():
-    test_doc = {"message": "Hello, MongoDB!"}
-    collection.insert_one(test_doc)
-    return "Inserted test doc into MongoDB!"
-
+#---------START OF API CALLS FOR COMMENTS------------
+# insert data of comments to mongo database 
 @app.route('/api/add_data', methods=['POST'])
 def add_data():
     try:
@@ -73,6 +71,7 @@ def add_data():
         print("Error inserting data:", e)
         return jsonify({'error': str(e)}), 500
 
+# get stand-alone/parent comments 
 @app.route('/get_comments')
 def get_comments():
     article_id = request.args.get('article')
@@ -85,6 +84,7 @@ def get_comments():
         c['_id'] = str(c['_id'])  # Convert ObjectId to string
     return jsonify(comments)
 
+# get replies of parent comments
 @app.route('/get_replies')
 def get_replies():
     comment_id = request.args.get('comment_id')
@@ -94,14 +94,14 @@ def get_replies():
         c['_id'] = str(c['_id'])  # Convert ObjectId to string
     return jsonify(comments)
 
-@app.route('/api/test')
-def test():
-    return "API is working!"
+#---------END OF API CALLS FOR COMMENTS------------
 
+# get NYT api key
 @app.route('/api/key')
 def get_key():
     return jsonify({'apiKey': os.getenv('NYT_API_KEY')})
 
+# get articles from NYT
 @app.route('/articles', methods=['GET'])
 def get_articles():
     NYT_API_KEY = os.getenv('NYT_API_KEY')

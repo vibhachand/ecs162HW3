@@ -22,7 +22,7 @@
         comment_id?: number;
     }
 
-    // loads and displays all existing comments
+    // initial fetch to load and display all existing comments
     onMount(async () => {
         await fetchComments(articleName);
     });
@@ -55,6 +55,7 @@
         }
     }
 
+    // fetch comments that are under a specified article; article_id = name of article
     async function fetchComments(article_id: string) {
         const res = await fetch(`http://localhost:8000/get_comments?article=${article_id}`);
         const data = await res.json();
@@ -97,7 +98,6 @@
     .container{
         position: fixed; 
         overflow-y: auto; 
-        padding-bottom: 25px;
     }
     h1{
         margin-top: 0px;
