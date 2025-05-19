@@ -4,10 +4,13 @@
   import Date from './lib/Date.svelte';
   import Article from './lib/Article.svelte';
   import CommentSection from './lib/CommentSection.svelte';
+  import { isLoggedIn } from './sharedDataStore.js';
 
   let apiKey: string = '';
 
   let loggedIn = false;
+  export { loggedIn };
+
   let email = "";
 
   let showAccount = false;
@@ -58,9 +61,11 @@
 
       const params = new URLSearchParams(window.location.search);
       loggedIn = params.get('loggedIn') === 'true';
-      // email = params.get('email');
+      email = params.get('email');
       console.log(loggedIn)
       console.log(email)
+
+      isLoggedIn.set(loggedIn);
 
 
     } catch (err) {

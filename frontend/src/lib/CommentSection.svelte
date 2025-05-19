@@ -1,4 +1,7 @@
 <script lang="ts">
+    import { isLoggedIn } from '../sharedDataStore.js';
+
+
     import Comment from './Comment.svelte';
     import { onMount } from 'svelte';
     
@@ -73,7 +76,11 @@
     <!-- comment form for new comment -->
     <form onsubmit={postComment}>
         <textarea bind:value={state.newComment} id="comment" required placeholder="Share your thoughts."></textarea>
-        <button type="submit">SUBMIT</button>
+        {#if $isLoggedIn}
+            <button type="submit">SUBMIT</button>
+        {:else}
+            <p>Please log in to post a comment</p>
+        {/if}
     </form>
     <div id="commentsContainer">
         {#each state.comments as c}

@@ -1,5 +1,6 @@
 <!-- Displays article info -->
 <script lang="ts">
+
   let { id, articles, hideHr = false} = $props();
   import CommentSection from './CommentSection.svelte';
   import { onMount } from 'svelte';
