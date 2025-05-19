@@ -1,6 +1,9 @@
 <script lang="ts">
     // keep track of whether or not user is logged in
     import { isLoggedIn } from '../sharedDataStore.js';
+    import { isMod } from '../sharedDataStore.js';
+
+
     import Comment from './Comment.svelte';
     import { onMount } from 'svelte';
     
@@ -55,6 +58,8 @@
         }
     }
 
+    
+
     // fetch comments that are under a specified article; article_id = name of article
     async function fetchComments(article_id: string) {
         const res = await fetch(`http://localhost:8000/get_comments?article=${article_id}`);
@@ -81,14 +86,14 @@
         {#if $isLoggedIn}
             <button type="submit">SUBMIT</button>
         {:else}
-            <p>Please log in to post a comment</p>
+            <p>Please log in to post a comment.</p>
         {/if}
     </form>
     <div id="commentsContainer">
         <!-- iterate through all the comments to be displayed-->
         {#each state.comments as c}
             <!-- pass the comment's username, comment, and _id (to be used to identify which parent comment a reply belongs to) as props to Comment component -->
-            <Comment username={c.username} comment={c.comment} ogComment_id={c._id} isReply={false} articleName={articleName}/>
+            <Comment username={c.username} comment={c.comment} ogComment_id={c._id} isReply={false} articleName={articleName} fetchComments={fetchComments}/>
         {/each}
     </div>
 </div>

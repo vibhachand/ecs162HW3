@@ -6,6 +6,7 @@ from authlib.common.security import generate_token
 from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
+from bson.objectid import ObjectId
 
 # app = Flask(__name__)
 load_dotenv()
@@ -56,8 +57,32 @@ oauth.register(
     client_kwargs={'scope': 'openid email profile'}
 )
 
-#---------START OF API CALLS FOR COMMENTS------------
-# insert data of comments to mongo database 
+@app.route("/test-mongo")
+def test_mongo():
+    test_doc = {"message": "Hello, MongoDB!"}
+    collection.insert_one(test_doc)
+    return "Inserted test doc into MongoDB!"
+
+# delete comments
+@app.route('/api/delete_comment', methods=['DELETE'])
+def delete_comment():
+    comment_id = request.args.get('comment_id')
+    if not comment_id:
+        return jsonify({"error": "No comment_id provided"}), 400
+
+    try:
+        result = collection.delete_one({"_id": ObjectId(comment_id)})
+        replies_res = collection.delete_many({"comment_id": comment_id})
+        print(replies_res)
+        if result.deleted_count == 1:
+            return jsonify({"message": "deleted comment"}), 200
+        else:
+            return jsonify({"error": "no comment"}), 404
+    except Exception as e:
+        print("Error deleting comment:", e)
+        return jsonify({"error": str(e)}), 500
+    
+
 @app.route('/api/add_data', methods=['POST'])
 def add_data():
     try:

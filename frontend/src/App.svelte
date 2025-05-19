@@ -4,11 +4,16 @@
   import Date from './lib/Date.svelte';
   import Article from './lib/Article.svelte';
   import { isLoggedIn } from './sharedDataStore.js';
+  import { isMod } from './sharedDataStore';
 
   let apiKey: string = '';
-  
+
+
   let loggedIn = false;
   export { loggedIn };
+
+  let mod = false;
+  export { mod };
 
   let email = "";
   let username = "";
@@ -57,7 +62,16 @@
       email = params.get('email');
       console.log(loggedIn)
       console.log(email)
-      username = params.get('username') || "";
+
+      if (email == 'moderator@hw3.com') {
+        mod = true;
+      }
+
+      // determine if user is a moderator
+      isMod.set(mod);
+
+      console.log("mod: ", mod);
+
       isLoggedIn.set(loggedIn);
   
 

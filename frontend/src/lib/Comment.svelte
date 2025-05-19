@@ -1,11 +1,15 @@
 <script lang="ts">
-    let {username, comment, isReply = false, replies = null, ogComment_id, articleName} = $props();
+    let {username, comment, isReply = false, replies = null, ogComment_id, articleName, fetchComments} = $props();
     import { onMount } from 'svelte';
+    import { isMod } from '../sharedDataStore';
+
+
 
     let state = $state({
         showReplySection: false, 
         newReply: '',
-        replies: [] as Comment[]
+        replies: [] as Comment[],
+        isDeleted: false
     })
 
     interface Comment {
@@ -14,6 +18,23 @@
         article: string;
         isReply?: boolean;
         comment_id?: number;
+    }
+
+    // delete comment
+    async function deleteComment() {
+        const response = await fetch(`http://localhost:8000/api/delete_comment?comment_id=${ogComment_id}`, {
+            method: 'DELETE'
+        });
+        if (response.ok) {
+            console.log("comment deleted")
+            state.isDeleted = true;
+            state.replies = [];
+            await fetchComments(articleName);
+
+        } else {
+            console.error("Failed to delete comment");
+        }
+
     }
 
     // show or hide reply form under parent comment
@@ -66,6 +87,7 @@
     
 </script>
 
+{#if !state.isDeleted}
 <div class="container">
     <!-- usernane and profile picture -->
     <div class="userInfo">
@@ -78,6 +100,9 @@
     <div>
         <p class="comment">{comment}</p>
         <button id="replyButton" onclick={toggleReplySection}>{state.showReplySection ? 'Cancel' : 'Reply'}</button>
+        {#if $isMod}
+            <button id="deleteButton" onclick={deleteComment}>Delete</button>
+        {/if}
     </div>
     <div>
         <!-- display reply form if user opens it -->
@@ -109,6 +134,7 @@
     </div>
     
 </div>
+{/if}
 
 <style>
     *{
@@ -119,6 +145,7 @@
         border-bottom: 1px #cccecf solid; 
         padding-bottom: 15px; 
     }
+
     img{
         width: 35px;
         height: 35px;
@@ -130,10 +157,10 @@
         gap: 14px;
     }
    
-        .comment{
-            padding-left: 50px;
-            margin-top: 8px;
-        }
+    .comment{
+        padding-left: 50px;
+        margin-top: 8px;
+    }
     
     #replyButton{
         background: none;
