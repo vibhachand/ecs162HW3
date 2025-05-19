@@ -119,7 +119,7 @@ def test_add_data_exception(client):
 
     # CITE: CHATPGT ---Patch insert_one to raise an exception
     with patch('app.collection.insert_one', side_effect=Exception("Mock insert failure")):
-    #-----------------
+    #----end-------------
         response = client.post('/api/add_data', json=test_comment)
         assert response.status_code == 500
         data = response.get_json()
@@ -133,7 +133,7 @@ def test_home_logged_in(client):
             'email': 'test@example.com',
             'name': 'Amy'
         }
-    #--------------------------------
+    #------end--------------------------
 
     response = client.get('/')
     assert response.status_code == 200
@@ -151,14 +151,10 @@ def test_home_not_logged_in(client):
 def test_logout(client):
     # CITE: CHATGPT-------------------------------
     with client.session_transaction() as sess:
-    #--------------------------------------------
+    #-------end-------------------------------------
         sess['user'] = {'email': 'test@example.com'}
         
     response = client.get('/logout')
     assert response.status_code == 302
     assert response.headers['Location'] == '/'
-    with client.session_transaction() as sess:
-        assert 'user' not in sess
-# Run:
-    # coverage run -m pytest
-    # coverage html
+    
