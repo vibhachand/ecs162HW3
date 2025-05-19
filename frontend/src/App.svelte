@@ -5,11 +5,16 @@
   import Article from './lib/Article.svelte';
   import CommentSection from './lib/CommentSection.svelte';
   import { isLoggedIn } from './sharedDataStore.js';
+  import { isMod } from './sharedDataStore';
 
   let apiKey: string = '';
 
+
   let loggedIn = false;
   export { loggedIn };
+
+  let mod = false;
+  export { mod };
 
   let email = "";
 
@@ -64,6 +69,15 @@
       email = params.get('email');
       console.log(loggedIn)
       console.log(email)
+
+      if (email == 'moderator@hw3.com') {
+        mod = true;
+      }
+
+      // determine if user is a moderator
+      isMod.set(mod);
+
+      console.log("mod: ", mod);
 
       isLoggedIn.set(loggedIn);
 
