@@ -48,11 +48,7 @@
     image: string | null;
     caption: string;
   }[] = [];
-  // from TA's OH code
-  // async function handleLogin(){
-  //   const authUrl = 'http://localhost:8000/login'
-  //   window.location.href = authUrl;
-  // }
+  
   onMount(async () => {
     try {
       console.log("here")
@@ -60,6 +56,7 @@
       const params = new URLSearchParams(window.location.search);
       loggedIn = params.get('loggedIn') === 'true';
       email = params.get('email');
+      username = params.get('username') || "";
       console.log(loggedIn)
       console.log(email)
 
