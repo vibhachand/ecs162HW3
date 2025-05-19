@@ -2,7 +2,7 @@
     import Comment from './Comment.svelte';
     import { onMount } from 'svelte';
     
-    let {articleName} = $props();
+    let {articleName = null, onClose} = $props();
 
     let state = $state({
         newComment: "",
@@ -61,10 +61,13 @@
     }
 </script>
 
-<div class="overlay" style="position: fixed; "></div>
+<div class="overlay" style="position: fixed;" onclick={onClose}></div>
 
 <!-- comment section  -->
 <div class="container">
+    <!-- Close button -->
+    <button class="close-btn" onclick={onClose}>x</button>
+
     <h1>{articleName}</h1>
     <h2>Comments <span id="numOfComments">{state.numOfComments}</span></h2>
     <!-- comment form for new comment -->
@@ -123,6 +126,21 @@
         position: absolute;
 
     }
+
+    /* styling for close button */
+    .close-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: none;
+        border: none;
+        font-size: 25px;
+        color: #383737;
+        cursor: pointer;
+        padding: 5px 10px;
+        z-index: 3;
+    }
+
     textarea {
         resize: none; /* Disables resizing */
         padding: 15px;
